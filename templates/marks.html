@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Список оценок</title>
+  </head>
+  <body>
+    <label for="groupSelect">Выберите группу:</label>
+    <select id="groupSelect" name="groupSelect" onchange="updateMarksTable()">
+      {% for group in groups %}
+      <option value="{{ group.id }}">{{ group.name }}</option>
+      {% endfor %}
+    </select>
+    <table id="marksTable">
+      <thead>
+        <tr>
+          <th>Студент</th>
+          <th>Оценки</th>
+          <th>Средняя оценка</th>
+          <th>Итоговая оценка</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mark in marks %}
+        <tr class="group{{ mark.group }}">
+          <td>{{ mark.student }}</td>
+          <td>{{ mark.scores|join(', ') }}</td>
+          <td>{{ mark.average_score }}</td>
+          <td>{{ mark.rounded_score }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <script>
+      function updateMarksTable() {
+        const group_id = document.getElementById("groupSelect").value;
+        const rows = document.querySelectorAll("#marksTable tbody tr");
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          if (row.classList.contains("group" + group_id)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        }
+      }
+      updateMarksTable()
+    </script>
+  </body>
+</html>

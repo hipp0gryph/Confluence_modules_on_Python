@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Студенты и их достижения</title>
+</head>
+<body>
+    <h1>Студенты и их достижения</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Студент</th>
+                <th>Достижения</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for achievement in achievements %}
+            <tr>
+                <td>{{ achievement.student }}</td>
+                <td>
+                    {% for id_achievement, description in zip(achievement.id_achievement, achievement.description) %}
+                    <img src="http://127.0.0.1:8000/achieve_files/{{ id_achievement }}.png?{{ timestamp }}" alt="Достижение {{ id_achievement }}" title="{{ description }}">
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

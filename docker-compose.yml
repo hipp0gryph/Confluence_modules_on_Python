@@ -1,0 +1,50 @@
+version: "3"
+services:
+  confluence:
+    container_name: confluence
+    hostname: confluence
+    image: atlassian/confluence:8.3.0-tinymce6-m01-ubuntu-jdk11
+    ports:
+      - "8090:8090"
+      - "8091:8091"
+      - "5005:5005"
+    depends_on:
+      - postgres
+    networks:
+      - confluence-net
+    volumes:
+      - /data/your-confluence-home:/var/atlassian/application-data/confluence
+
+  confluence_backend_app:
+    image: confluence_backend_app
+    container_name: confluence_backend_app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    networks:
+      - confluence-net
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  postgres:
+    image: postgres:alpine3.17
+    container_name: postgres
+    hostname: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=confluence
+    volumes:
+      - /data/postgres-confluence-home:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - confluence-net
+
+networks:
+  confluence-net:
+    driver: bridge
